@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Pathfinder.Crossover
     {
         public override CrossoverOperation Calc(CrossoverOperation Operation)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             if (rand.NextDouble() > CrossoverRate || Operation.IsEqual())
                 return Operation;
             var babymom = CrossoverOperation.Copy(Operation.Mom);

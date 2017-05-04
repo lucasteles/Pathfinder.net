@@ -1,15 +1,12 @@
 ﻿using Pathfinder.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Pathfinder.Factories;
 namespace Pathfinder.Mutation
 {
     public class MutateSM : AbstractMutate
     {
         public override IGenome Calc(IGenome baby)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             if (rand.NextDouble() > MutationRate || baby.ListNodes.Count < 3)
                 return baby;
             var listcount = baby.ListNodes.Count;

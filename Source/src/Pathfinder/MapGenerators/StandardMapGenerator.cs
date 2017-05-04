@@ -1,52 +1,37 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Math;
+
 namespace Pathfinder.MapGenerators
 {
     public class StandardMapGenerator : IMapGenerator
     {
         public List<Node> GridMap { get; set; } = new List<Node>();
-        public IMap DefineMap(string argument, DiagonalMovement? diagonal = null)
+        public int Blocksize;
+
+        public IMap DefineMap(DiagonalMovement diagonal, int width, int height, int seed, int minPathLength)
         {
-            var width = Settings.Width;
-            var height = Settings.Height;
-            var seed = Settings.RandomSeed;
-            var minPathLength = Settings.MinimumPath;
-            var blocksize = Settings.RandomBlock;
+
+            int _GDC(int a, int b) => (b == 0 || a == 0) ? a | b : _GDC(Min(a, b), Max(a, b) % Min(a, b));
+            var blocksize = Blocksize > 0 ? Blocksize : _GDC(width, height);
             var IsAGoodMap = false;
             IMap ret = null;
-            if (argument != string.Empty)
-            {
-                var param = argument.Split('|');
-                try
-                {
-                    width = int.Parse(param[0]);
-                    height = int.Parse(param[1]);
-                    seed = double.Parse(param[2]) / 100;
-                    minPathLength = int.Parse(param[3]);
-                }
-                catch
-                {
-                    throw new Exception("Ivalid random map parameters!");
-                }
-            }
-            var d = Settings.AllowDiagonal;
-            if (diagonal.HasValue)
-                d = diagonal.Value;
-            // finder para valida se o mapa é passavel
-            var AStar = PFContainer.Resolve<IFinder>((int)FinderEnum.AStar);
 
-            AStar.DiagonalMovement = d;
-            AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
+            // finder para valida se o mapa é passavel
+            var aStar = FinderFactory.GetAStarImplementation();
+            IHeuristic heuristic;
+            heuristic = diagonal == DiagonalMovement.Never ?
+                            HeuristicFactory.GetManhattamImplementation() :
+                            HeuristicFactory.GetOctileImplementation();
+
             var subgrid = new List<Node>();
             while (!IsAGoodMap)
             {
                 var nodes = new List<Node>();
-                var _map = new Map(width, height)
-                {
-                    Diagonal = d
-                };
+                var _map = new Map(diagonal, width, height);
 
                 var size = Convert.ToInt32(blocksize * blocksize * seed);
                 var rand = new Random();
@@ -77,9 +62,9 @@ namespace Pathfinder.MapGenerators
                 _map.EndNode = RandNode(rand, width, height, false);
                 if (!_map.ValidMap())
                     throw new Exception("Invalid map configuration");
-                if (AStar.Find(_map)) // verifica se o mapa possui um caminho
+                if (aStar.Find(_map, heuristic)) // verifica se o mapa possui um caminho
                 {
-                    var path = AStar.GetPath();
+                    var path = _map.GetPath();
                     if (path.Max(e => e.G) >= minPathLength) // verifica se o caminho sastifaz o tamanho minimo
                     {
                         IsAGoodMap = true;
@@ -90,8 +75,7 @@ namespace Pathfinder.MapGenerators
                 GridMap = new List<Node>();
                 subgrid = new List<Node>();
             }
-            if (Settings.AutoSaveMaps)  // dont run if in batchmode
-                FileTool.SaveFileFromMap(ret);
+
             return ret;
         }
         private Node RandNode(Random rand, int width, int height, bool wall)
@@ -104,6 +88,11 @@ namespace Pathfinder.MapGenerators
                 p = new Node(x, y, !wall, DirectionMovement.None);
             }
             return p;
+        }
+
+        public IMap DefineMap()
+        {
+            throw new NotImplementedException();
         }
     }
 }

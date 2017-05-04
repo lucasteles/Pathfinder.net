@@ -1,18 +1,19 @@
 ﻿using Pathfinder.Abstraction;
-using Pathfinder.Factories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using static System.Math;
+
 namespace Pathfinder.Fitness
 {
     public class FitnessWithCirclicValidation : IFitness
     {
-        IHeuristic Heuristic;
-        public FitnessWithCirclicValidation() {
-            Heuristic = PFContainer.Resolve<IHeuristic>();
+        public IHeuristic Heuristic { get; set; }
+        public double Penalty { get; set; }
+
+        public FitnessWithCirclicValidation()
+        {
+            Penalty = Constants.PENALTY;
         }
+
         public double Calc(IGenome genome)
         {
             var _endNode = genome.Map.EndNode;
@@ -28,7 +29,7 @@ namespace Pathfinder.Fitness
                             .Any(e => e.qtd > 1);
             double penalty = 0;
             if (IsCirclic)
-                penalty = GASettings.Penalty * (HeuristicValue / HeuristicMaxDistance); // calcula proporção da distancia, caso esteja mais lonje o peso do caminho ciclico é maior
+                penalty = Penalty * (HeuristicValue / HeuristicMaxDistance); // calcula proporção da distancia, caso esteja mais lonje o peso do caminho ciclico é maior
             return penalty + HeuristicValue;
         }
     }

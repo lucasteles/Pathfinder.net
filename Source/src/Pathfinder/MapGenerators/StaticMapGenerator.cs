@@ -1,36 +1,33 @@
 ﻿using Pathfinder.Abstraction;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.MapGenerators
 {
     public class StaticMapGenerator : IMapGenerator
     {
-        public IMap DefineMap(string argument, DiagonalMovement? diagonal = null)
+        public IMap DefineMap()
         {
             const int width = 7;
             const int height = 5;
             var nodes = new List<Node>();
-            var ret = new Map(width, height);
-            if (argument=="")
+            var ret = new Map(DiagonalMovement.Never, width, height);
+            var choose = 0;
+            while (choose < 49 || choose > 51)
             {
-                var choose = 0;
-                while (choose < 49 || choose >51)
-                {
-                    Console.Clear();
-                    Console.Write("Choose the map: \n 1=Without Wall\n 2=Wall with gap\n 3=Wall without gap\n=>");
-                    choose = Console.Read();
-                }
-                var opt = new Dictionary<int, string>
-                {
-                    [49] = "NoWall",
-                    [50] = "WithGap",
-                    [51] = "WithoutGap"
-                };
-                argument = opt[choose];
+                Console.Clear();
+                Console.Write("Choose the map: \n 1=Without Wall\n 2=Wall with gap\n 3=Wall without gap\n=>");
+                choose = Console.Read();
             }
+            var opt = new Dictionary<int, string>
+            {
+                [49] = "NoWall",
+                [50] = "WithGap",
+                [51] = "WithoutGap"
+            };
+            var argument = opt[choose];
+
+
+
             switch (argument)
             {
                 case "NoWall":
@@ -61,7 +58,7 @@ namespace Pathfinder.MapGenerators
             //  □ □ □ □ □ □ □
             //  □ □ □ □ □ □ □
             map.StartNode = map[2, 1];
-            map.EndNode =  map[2, 5];
+            map.EndNode = map[2, 5];
         }
         /// <summary>
         /// Create an L-shaped wall between S and F
@@ -96,12 +93,17 @@ namespace Pathfinder.MapGenerators
             //  □ □ □ ■ □ □ □
             // No path
             map[0, 3].Walkable = false;
-            map[1, 3 ].Walkable = false;
-            map[2, 3 ].Walkable = false;
-            map[3, 3 ].Walkable = false;
-            map[4, 3 ].Walkable = false;
+            map[1, 3].Walkable = false;
+            map[2, 3].Walkable = false;
+            map[3, 3].Walkable = false;
+            map[4, 3].Walkable = false;
             map.StartNode = map[2, 1];
             map.EndNode = map[2, 5];
+        }
+
+        public IMap DefineMap(DiagonalMovement diagonal, int width, int height, int seed, int minPathLength)
+        {
+            return DefineMap();
         }
     }
 }

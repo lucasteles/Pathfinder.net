@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-namespace Pathfinder.Abstraction
+﻿namespace Pathfinder.Abstraction
 {
     public class CrossoverOperation
     {
@@ -16,10 +12,7 @@ namespace Pathfinder.Abstraction
             Dad = mon;
             Mom = dad;
         }
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
+
         public bool IsEqual()
         {
             return Mom.Equals(Dad);
@@ -33,7 +26,7 @@ namespace Pathfinder.Abstraction
     {
         protected AbstractCrossover()
         {
-            CrossoverRate = GASettings.CrossoverRate;
+            CrossoverRate = Constants.CROSSOVER_RATE;
         }
         protected double CrossoverRate { get; set; }
         CrossoverOperation Operation { get; set; }

@@ -2,14 +2,17 @@
 using Pathfinder.Genetic_Algorithm.Fitness;
 using System.Linq;
 using static System.Math;
+
 namespace Pathfinder.Fitness
 {
     public class FitnessWithCollisionDetectionAndCirclicValidation : IFitness
     {
-        IHeuristic Heuristic;
+        public IHeuristic Heuristic { get; set; }
+        public double Penalty { get; set; }
+
         public FitnessWithCollisionDetectionAndCirclicValidation()
         {
-            Heuristic = PFContainer.Resolve<IHeuristic>();
+            Penalty = Constants.PENALTY;
         }
         public double Calc(IGenome genome)
         {
@@ -21,7 +24,7 @@ namespace Pathfinder.Fitness
             var penalty = (double)0;
             if (lastnode.Collision)
             {
-                var xy = new xy() { x = lastnode.X, y = lastnode.Y };
+                var xy = new Xy { x = lastnode.X, y = lastnode.Y };
                 var badPath = 0;
                 if (FinessHelper.RepeatControl.ContainsKey(xy))
                 {
@@ -30,7 +33,7 @@ namespace Pathfinder.Fitness
                 }
                 else
                     FinessHelper.RepeatControl.Add(xy, 1);
-                penalty += (GASettings.Penalty * (HeuristicValue / HeuristicMaxDistance)) + (badPath*100);
+                penalty += (Penalty * (HeuristicValue / HeuristicMaxDistance)) + (badPath * 100);
             }
             var IsCirclic = genome
                           .ListNodes
@@ -38,7 +41,7 @@ namespace Pathfinder.Fitness
                           .Select(e => new { e.Key.X, e.Key.Y, qtd = e.Count() })
                           .Any(e => e.qtd > 1);
             if (IsCirclic)
-                penalty += GASettings.Penalty * (HeuristicValue / HeuristicMaxDistance);
+                penalty += Penalty * (HeuristicValue / HeuristicMaxDistance);
             return penalty + HeuristicValue;
         }
     }

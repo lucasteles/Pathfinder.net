@@ -1,11 +1,16 @@
-﻿using Pathfinder.Abstraction;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 namespace Pathfinder
 {
     public class FileTool
     {
+        public static Char Start;
+        public static Char End;
+        public static Char Wall;
+        public static Char Path;
+        public static Char Empty;
+
         public FileTool()
         {
         }
@@ -22,11 +27,7 @@ namespace Pathfinder
                 {
                     var c = ' ';
                     var node = map[i, j];
-                    if (node == map.StartNode)
-                        c = Settings.Start;
-                    else if (node == map.EndNode)
-                        c = Settings.End;
-                    else c = !node.Walkable ? Settings.Wall : Settings.Empty;
+                    c = node == map.StartNode ? Start : node == map.EndNode ? End : !node.Walkable ? Wall : Empty;
                     builder.Append(c.ToString());
                 }
                 builder.Append("\n");
@@ -49,6 +50,7 @@ namespace Pathfinder
             DiagonalMovement? d = null;
             if (fileName == "")
                 throw new Exception("fileName is empty!");
+
             using (var fs = new FileStream(fileName, FileMode.Open))
             {
                 using (var reader = new BinaryReader(fs))
@@ -73,16 +75,16 @@ namespace Pathfinder
                             ReadMapSettings(string.Join("", line), out d);
                             continue;
                         }
-                        if (chrDig == Settings.Start)
+                        if (chrDig == Start)
                             startNode = new Node(x, y);
                         else
-                        if (chrDig == Settings.End)
+                        if (chrDig == End)
                             endNode = new Node(x, y);
                         else
-                        if (chrDig == Settings.Wall)
+                        if (chrDig == Wall)
                             nodes.Add(new Node(x, y) { Walkable = false });
                         else
-                        if (chrDig == Settings.Empty)
+                        if (chrDig == Empty)
                             nodes.Add(new Node(x, y) { Walkable = true });
                         else
                             throw new Exception("invalid character " + chrDig.ToString());
@@ -93,12 +95,16 @@ namespace Pathfinder
             }
             width = x;
             height = y;
-            var ret = new Map(width, height)
+
+            if (d == null)
+                throw new Exception("No diagonal seted on mapfile");
+
+            var ret = new Map(d.Value, width, height)
             {
                 StartNode = startNode,
                 EndNode = endNode,
-                Diagonal = d
             };
+
             ret.DefineAllNodes(nodes);
             ret.DefineNode(ret.StartNode);
             ret.DefineNode(ret.EndNode);
@@ -122,20 +128,19 @@ namespace Pathfinder
                     }
             }
         }
-        public static void SaveFileFromMap(IMap map, string filename = "")
+        public static void SaveFileFromMap(IMap map, string filename)
         {
             var text = GetTextRepresentation(map);
-            var folder = Settings.FolderToSaveMaps;
+            var folder = "maps";
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             var now = DateTime.Now;
             if (string.IsNullOrEmpty(filename))
             {
                 filename = $"map_{map.Width}x{map.Height}_{now.Year}{now.Month}{now.Day}_{now.Hour}-{now.Minute}-{now.Second}.txt";
-                filename = Path.Combine(folder, filename);
+                filename = System.IO.Path.Combine(folder, filename);
             }
-            if (map.Diagonal != null)
-                text = $"?diagonal={map.Diagonal};\n{text}";
+            text = $"?diagonal={map.Diagonal};\n{text}";
             File.WriteAllText(filename, text);
         }
     }

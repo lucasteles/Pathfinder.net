@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,10 +12,19 @@ namespace Pathfinder.Finders
         public IMutate Mutate { get; set; }
         public ICrossover Crossover { get; set; }
         public ISelection Selection { get; set; }
+
+        public int PopulationSize { get; set; }
+        public int GenerationLimit { get; set; }
+        public int BestSolutionToPick { get; set; }
+
         public int Generations { get; set; }
         public GAFinder() : base("Genetic Algorithm")
         {
             SleepUITimeInMs = 200;
+
+            PopulationSize = Constants.POPULATION_SIZE;
+            GenerationLimit = Constants.GENERATION_LIMIT;
+            BestSolutionToPick = Constants.BEST_SOLUTION_TO_PICK;
 
         }
 
@@ -28,11 +38,11 @@ namespace Pathfinder.Finders
         public override bool Find(IMap map, IHeuristic heuristic)
         {
             var Adaptation = new Adaptation(map);
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             var startNode = map.StartNode;
             var endNode = map.EndNode;
 
-            for (int i = 0; i < GASettings.PopulationSize; i++)
+            for (int i = 0; i < PopulationSize; i++)
                 Populations.Add(new Genome(map));
 
 
@@ -41,11 +51,11 @@ namespace Pathfinder.Finders
 
             var step = 0;
             OnStart(BuildArgs(step, map));
-            for (int i = 0; i < GASettings.GenerationLimit; i++)
+            for (int i = 0; i < GenerationLimit; i++)
             {
                 var newpopulations = new List<IGenome>();
                 Populations = Populations.OrderBy(o => o.Fitness).ToList();
-                for (int j = 0; j < GASettings.BestSolutionToPick; j++)
+                for (int j = 0; j < BestSolutionToPick; j++)
                 {
                     Populations[j].Fitness = Fitness.Calc(Populations[j]);
                     newpopulations.Add(Populations[j]);
@@ -98,7 +108,7 @@ namespace Pathfinder.Finders
                 Populations = newpopulations.ToList();
                 OnStep(BuildArgs(step++, map));
             }
-            Generations = GASettings.GenerationLimit;
+            Generations = GenerationLimit;
             OnEnd(BuildArgs(step, map, false));
             return false;
         }

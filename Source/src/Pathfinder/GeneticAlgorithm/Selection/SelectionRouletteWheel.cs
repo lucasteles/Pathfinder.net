@@ -1,8 +1,7 @@
 ﻿using Pathfinder.Abstraction;
-using System;
+using Pathfinder.Factories;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Selection
 {
     public class SelectionRouletteWheel : ISelection
@@ -13,13 +12,13 @@ namespace Pathfinder.Selection
             var weight = new double[listnode.Count()];
             // calculate the weights
             for (int i = 0; i < listnode.Count(); i++)
-                weight[i] = 100 - ( (listnode[i].Fitness * 100) / maxFitness );
+                weight[i] = 100 - ((listnode[i].Fitness * 100) / maxFitness);
             var index = -1;
             var weight_sum = 0d;
             for (int i = 0; i < weight.Length; i++)
                 weight_sum += weight[i];
             // get a random value
-            var value = PFContainer.Resolve<IRandom>()
+            var value = RandomFactory.Rand
                             .NextDouble() * weight_sum;
             // locate the random value based on the weights
             for (int i = 0; i < weight.Length; i++)

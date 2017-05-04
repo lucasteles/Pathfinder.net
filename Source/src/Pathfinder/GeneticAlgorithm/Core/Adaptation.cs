@@ -1,8 +1,8 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder
 {
     public class Adaptation
@@ -14,7 +14,7 @@ namespace Pathfinder
         }
         public IGenome Calc(IGenome genome)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             var listnode = genome.ListNodes;
 
             var startnode = listnode.First();
@@ -39,9 +39,9 @@ namespace Pathfinder
                     var dx = lastcoor.X - coor.X;
                     var dy = lastcoor.Y - coor.Y;
 
-                    if(Math.Abs(dx) > 1 || Math.Abs(dy) > 1)
+                    if (Math.Abs(dx) > 1 || Math.Abs(dy) > 1)
                     {
-                        int f = 0;
+                        var f = 0;
                         f = 1;
                         var j = f;
                     }

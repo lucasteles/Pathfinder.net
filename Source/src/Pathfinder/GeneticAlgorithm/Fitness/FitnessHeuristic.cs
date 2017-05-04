@@ -1,18 +1,19 @@
 ﻿using Pathfinder.Abstraction;
-using Pathfinder.Factories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using static System.Math;
+
 namespace Pathfinder.Fitness
 {
     public class FitnessHeuristic : IFitness
     {
-        public IHeuristic Heuristic;
-        public FitnessHeuristic() {
-            Heuristic = PFContainer.Resolve<IHeuristic>();
+        public IHeuristic Heuristic { get; set; }
+        public double Penalty { get; set; }
+
+        public FitnessHeuristic()
+        {
+
         }
+
         public double Calc(IGenome genome)
         {
             var _endNode = genome.Map.EndNode;

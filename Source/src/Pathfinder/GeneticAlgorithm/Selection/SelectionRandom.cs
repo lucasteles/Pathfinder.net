@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System.Collections.Generic;
 namespace Pathfinder.Selection
 {
@@ -6,7 +7,7 @@ namespace Pathfinder.Selection
     {
         public IGenome Select(List<IGenome> listnode)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             var ind = rand.Next(0, listnode.Count);
             return listnode[ind];
         }

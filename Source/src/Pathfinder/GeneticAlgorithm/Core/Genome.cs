@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System.Collections.Generic;
 namespace Pathfinder
 {
@@ -27,7 +28,7 @@ namespace Pathfinder
         }
         public List<Node> RouteFinding(DiagonalMovement diagonal)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             var listnode = new List<Node>();
             var run = true;
             var node = new Node(Map.StartNode);

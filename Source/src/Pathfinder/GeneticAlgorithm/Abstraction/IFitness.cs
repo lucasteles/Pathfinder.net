@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-namespace Pathfinder.Abstraction
+﻿namespace Pathfinder.Abstraction
 {
     public interface IFitness
     {
+        double Penalty { get; set; }
+        IHeuristic Heuristic { get; set; }
+
         double Calc(IGenome listnode);
     }
 }

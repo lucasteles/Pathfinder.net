@@ -1,15 +1,19 @@
 ﻿using Pathfinder.Abstraction;
 using System.Linq;
 using static System.Math;
+
 namespace Pathfinder.Fitness
 {
     public class FitnessWithCollisionDetection : IFitness
     {
-        IHeuristic Heuristic;
         public FitnessWithCollisionDetection()
         {
-            Heuristic = PFContainer.Resolve<IHeuristic>();
+            Penalty = Constants.PENALTY;
         }
+
+        public IHeuristic Heuristic { get; set; }
+        public double Penalty { get; set; }
+
         public double Calc(IGenome genome)
         {
             var _endNode = genome.Map.EndNode;
@@ -19,7 +23,7 @@ namespace Pathfinder.Fitness
             var HeuristicValue = Heuristic.Calc(Abs(lastnode.X - _endNode.X), Abs(lastnode.Y - _endNode.Y));
             var penalty = (double)0;
             if (lastnode.Collision)
-                penalty = GASettings.Penalty * (HeuristicValue / HeuristicMaxDistance);
+                penalty = Penalty * (HeuristicValue / HeuristicMaxDistance);
             return penalty + HeuristicValue;
         }
     }

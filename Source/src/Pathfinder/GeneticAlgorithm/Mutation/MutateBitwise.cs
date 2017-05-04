@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Pathfinder.Mutation
     {
         public override IGenome Calc(IGenome baby)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             if (rand.NextDouble() > MutationRate || baby.ListNodes.Count < 3)
                 return baby;
             var i = (int)Math.Floor(rand.NextDouble() * baby.ListNodes.Count());

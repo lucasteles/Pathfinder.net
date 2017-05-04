@@ -1,4 +1,4 @@
-﻿using Pathfinder.Abstraction;
+﻿using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +26,17 @@ namespace Pathfinder
 
         public virtual int GetMaxExpandedNodes() => _maxExpandedNodes;
 
-        public Map(int width, int height)
+        public Map(DiagonalMovement diagonal, int width, int height)
         {
-            Setup(width, height, 0, 0, width - 1, height - 1);
+            Setup(diagonal, width, height, 0, 0, width - 1, height - 1);
         }
-        public Map(int width, int height, int startNodeX, int startNodeY, int endNodeX, int endNodeY)
+        public Map(DiagonalMovement diagonal, int width, int height, int startNodeX, int startNodeY, int endNodeX, int endNodeY)
         {
-            Setup(width, height, startNodeX, startNodeY, endNodeX, endNodeY);
+            Setup(diagonal, width, height, startNodeX, startNodeY, endNodeX, endNodeY);
         }
-        private void Setup(int width, int height, int startNodeX, int startNodeY, int endNodeX, int endNodeY)
+        private void Setup(DiagonalMovement diagonal, int width, int height, int startNodeX, int startNodeY, int endNodeX, int endNodeY)
         {
+            Diagonal = diagonal;
             Width = width;
             Height = height;
             Nodes = new Node[height, width];
@@ -69,7 +70,7 @@ namespace Pathfinder
         }
         public Node GetDirectionNode(Node node, bool ByRef = true, bool valid = true)
         {
-            var rand = PFContainer.Resolve<IRandom>();
+            var rand = RandomFactory.Rand;
             var dir = (DirectionMovement)rand.Next(1, Enum.GetNames(typeof(DirectionMovement)).Length);
             return GetDirectionNode(node, dir, ByRef, valid);
         }

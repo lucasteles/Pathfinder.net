@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 namespace Pathfinder.Genetic_Algorithm.Fitness
 {
     public static class FinessHelper
     {
-        public static Dictionary<xy, int> RepeatControl = new Dictionary<xy, int>();
+        public static Dictionary<Xy, int> RepeatControl = new Dictionary<Xy, int>();
     }
-    public struct xy
+    public struct Xy
     {
         public int x;
         public int y;

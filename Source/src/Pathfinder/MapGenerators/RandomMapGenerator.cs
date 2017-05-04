@@ -1,4 +1,5 @@
 ﻿using Pathfinder.Abstraction;
+using Pathfinder.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,26 +15,21 @@ namespace Pathfinder.MapGenerators
             var IsAGoodMap = false;
             IMap ret = null;
 
-            var d = diagonal;
+            var aStar = FinderFactory.GetAStarImplementation();
+            IHeuristic heuristic;
+            heuristic = diagonal == DiagonalMovement.Never ?
+                            HeuristicFactory.GetManhattamImplementation() :
+                            HeuristicFactory.GetOctileImplementation();
 
-            var AStar = PFContainer.Resolve<IFinder, FinderEnum>(FinderEnum.AStar);
 
-
-            AStar.DiagonalMovement = d;
-            if (d == DiagonalMovement.Never)
-                AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Manhattan);
-            else
-                AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
             while (!IsAGoodMap)
             {
                 var nodes = new List<Node>();
-                var _map = new Map(width, height)
-                {
-                    Diagonal = d
-                };
+                var _map = new Map(diagonal, width, height);
 
                 var size = Convert.ToInt32((width * height) * seed);
                 var rand = new Random();
+
                 while (size > 0)
                 {
                     var p = RandNode(rand, width, height, true);
@@ -45,9 +41,9 @@ namespace Pathfinder.MapGenerators
                 _map.EndNode = RandNode(rand, width, height, false);
                 if (!_map.ValidMap())
                     throw new Exception("Invalid map configuration");
-                if (AStar.Find(_map)) // verifica se o mapa possui um caminho
+                if (aStar.Find(_map, heuristic)) // verifica se o mapa possui um caminho
                 {
-                    var path = AStar.GetPath();
+                    var path = _map.GetPath();
                     if (path.Max(e => e.G) >= minPathLength) // verifica se o caminho sastifaz o tamanho minimo
                     {
                         IsAGoodMap = true;
@@ -56,10 +52,15 @@ namespace Pathfinder.MapGenerators
                 }
                 GridMap = new List<Node>();
             }
-            if (Settings.AutoSaveMaps)
-                FileTool.SaveFileFromMap(ret);
+
             return ret;
         }
+
+        public IMap DefineMap()
+        {
+            throw new NotImplementedException();
+        }
+
         private Node RandNode(Random rand, int width, int height, bool wall)
         {
             Node p = null;
