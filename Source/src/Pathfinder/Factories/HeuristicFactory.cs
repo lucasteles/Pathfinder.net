@@ -1,12 +1,9 @@
 ﻿using Pathfinder.Abstraction;
 using Pathfinder.Heuristics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Factories
 {
-    public class HeuristicFactory : IFactory<IHeuristic>
+    public class HeuristicFactory : IFactory<IHeuristic, HeuristicEnum>
     {
         public static IHeuristic GetManhattamImplementation()
             => new Manhattan();
@@ -16,10 +13,9 @@ namespace Pathfinder.Factories
             => new Octile();
         public static IHeuristic GetChebyshevImplementation()
             => new Chebyshev();
-        public IHeuristic GetImplementation()
-            => Decide(Settings.Heuristic);
-        public IHeuristic GetImplementation(int option)
-            => Decide((HeuristicEnum)option);
+
+        public IHeuristic GetImplementation(HeuristicEnum option)
+            => Decide(option);
         private static IHeuristic Decide(HeuristicEnum option)
         {
             switch (option)

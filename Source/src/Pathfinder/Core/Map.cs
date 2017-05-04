@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 namespace Pathfinder
 {
     public class Map : IMap
@@ -10,11 +10,22 @@ namespace Pathfinder
         public Node[,] Nodes { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
-        public Node StartNode { get { return _startNode; }  set { DefineNode(value); _startNode = value; } }
-        public Node EndNode   { get { return _endNode; }    set { DefineNode(value); _endNode = value; } }
-        public DiagonalMovement? AllowDiagonal{get; set;}
+        public Node StartNode { get { return _startNode; } set { DefineNode(value); _startNode = value; } }
+        public Node EndNode { get { return _endNode; } set { DefineNode(value); _endNode = value; } }
+        public DiagonalMovement Diagonal { get; set; }
         Node _startNode;
         Node _endNode;
+
+        readonly object _lockClosed = new object();
+        readonly object _lockOpen = new object();
+
+
+        protected int _maxExpandedNodes { get; set; } = 0;
+        private IList<Node> _openList { get; set; }
+        private IList<Node> _closedList { get; set; }
+
+        public virtual int GetMaxExpandedNodes() => _maxExpandedNodes;
+
         public Map(int width, int height)
         {
             Setup(width, height, 0, 0, width - 1, height - 1);
@@ -54,11 +65,11 @@ namespace Pathfinder
         }
         public bool IsWalkableAt(int y, int x)
         {
-            return IsInside(y, x) && Nodes[y,x].Walkable;
+            return IsInside(y, x) && Nodes[y, x].Walkable;
         }
         public Node GetDirectionNode(Node node, bool ByRef = true, bool valid = true)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             var dir = (DirectionMovement)rand.Next(1, Enum.GetNames(typeof(DirectionMovement)).Length);
             return GetDirectionNode(node, dir, ByRef, valid);
         }
@@ -110,7 +121,7 @@ namespace Pathfinder
         }
         public IList<Node> GetNeighbors(Node node, bool ByRef = true, bool valid = true)
         {
-            return GetNeighbors(node, AllowDiagonal ?? Settings.AllowDiagonal, ByRef, valid);
+            return GetNeighbors(node, Diagonal, ByRef, valid);
         }
         public IList<Node> GetNeighbors(Node node, DiagonalMovement diag, bool ByRef = true, bool valid = true)
         {
@@ -233,6 +244,113 @@ namespace Pathfinder
                     node.RetainCount = 0;
                     node.Direction = DirectionMovement.None;
                 }
+        }
+
+        public virtual IEnumerable<Node> GetPath()
+        {
+            var path = new List<Node>();
+            var node = _endNode;
+            while (node != null || node == _startNode)
+            {
+                path.Add(node);
+                node = node.ParentNode;
+            }
+            return path;
+        }
+
+        public virtual void UpdateMaxNodes()
+        {
+            var atualNodes = _openList.Count + _closedList.Count;
+            if (atualNodes >= _maxExpandedNodes)
+                _maxExpandedNodes = atualNodes;
+        }
+
+        public void AddInOpenList(Node node)
+        {
+            lock (_lockOpen)
+                _openList.Add(node);
+        }
+        public void AddInClosedList(Node node)
+        {
+            lock (_lockClosed)
+                _closedList.Add(node);
+        }
+
+
+        public IEnumerable<Node> GetNodesInOpenList()
+        {
+            lock (_lockOpen)
+                foreach (var item in _openList)
+                    yield return item;
+
+        }
+
+        public IEnumerable<Node> GetNodesInClosedLit()
+        {
+            lock (_lockClosed)
+                foreach (var item in _closedList)
+                    yield return item;
+        }
+
+
+        public int OpenListCount()
+        {
+            lock (_lockOpen)
+                return _openList.Count();
+        }
+
+
+        public int ClosedListCount()
+        {
+            lock (_lockClosed)
+                return _closedList.Count();
+        }
+
+        public Node PopOpenList()
+        {
+            lock (_lockOpen)
+                return _openList.Pop();
+
+        }
+
+        public void PushInOpenList(Node node)
+        {
+            lock (_lockOpen)
+                _openList.Push(node);
+
+        }
+
+        public void OrderOpenList(Func<Node, object> predicate)
+        {
+            _openList = _openList.OrderByDescending(predicate).ToList();
+        }
+
+
+        public void UpdateOpenList(IList<Node> newList)
+        {
+            lock (_lockOpen)
+                _openList = newList;
+        }
+
+        public void UpdateClosedList(IList<Node> newList)
+        {
+            lock (_lockClosed)
+                _closedList = newList;
+        }
+        public virtual bool IsOpen(Node e)
+        {
+            lock (_lockOpen)
+                return _openList.ToList().Exists(i => i != null && i.Equals(e));
+        }
+        public virtual bool IsClosed(Node e)
+        {
+            lock (_lockClosed)
+                return _closedList.ToList().Exists(i => i != null && i.Equals(e));
+        }
+
+        public void SetMaxExpandedNodes(int value)
+        {
+            _maxExpandedNodes = value;
         }
     }
 }

@@ -1,21 +1,16 @@
 ﻿using Pathfinder.Abstraction;
 using Pathfinder.Selection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Factories
 {
-    public class SelectionFactory : IFactory<ISelection>
+    public class SelectionFactory : IFactory<ISelection, SelectionEnum>
     {
         public static ISelection GetRandomImplementation()
             => new SelectionRandom();
         public static ISelection GetRouletteWheelSelectionImplementation()
             => new SelectionRouletteWheel();
-        public ISelection GetImplementation()
-            => Decide(GASettings.SelectionAlgorithm);
-        public ISelection GetImplementation(int option)
-            => Decide((SelectionEnum)option);
+        public ISelection GetImplementation(SelectionEnum option)
+            => Decide(option);
         private static ISelection Decide(SelectionEnum option)
         {
             switch (option)

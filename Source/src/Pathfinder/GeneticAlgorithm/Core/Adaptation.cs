@@ -14,7 +14,7 @@ namespace Pathfinder
         }
         public IGenome Calc(IGenome genome)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             var listnode = genome.ListNodes;
 
             var startnode = listnode.First();

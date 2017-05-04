@@ -7,44 +7,29 @@ namespace Pathfinder.MapGenerators
     public class RandomMapGenerator : IMapGenerator
     {
         public List<Node> GridMap = new List<Node>();
-        public IMap DefineMap(string argument, DiagonalMovement? diagonal = null)
+        public IMap DefineMap(DiagonalMovement diagonal, int width, int height, int seed, int minPathLength)
         {
-            var width = Settings.Width;
-            var height = Settings.Height;
-            var seed = Settings.RandomSeed;
-            var minPathLength = Settings.MinimumPath;
+
+
             var IsAGoodMap = false;
             IMap ret = null;
-            if (argument != string.Empty)
-            {
-                var param = argument.Split('|');
-                try
-                {
-                    width = int.Parse(param[0]);
-                    height = int.Parse(param[1]);
-                    seed = double.Parse(param[2]) / 100;
-                    minPathLength = int.Parse(param[3]);
-                }
-                catch
-                {
-                    throw new Exception("Ivalid random map parameters!");
-                }
-            }
-            var d = Settings.AllowDiagonal;
-            if (diagonal.HasValue)
-                d = diagonal.Value;
-            var AStar = Container.Resolve<IFinder>((int)FinderEnum.AStar);
+
+            var d = diagonal;
+
+            var AStar = PFContainer.Resolve<IFinder, FinderEnum>(FinderEnum.AStar);
+
+
             AStar.DiagonalMovement = d;
             if (d == DiagonalMovement.Never)
-                AStar.Heuristic = Container.Resolve<IHeuristic>((int)HeuristicEnum.Manhattan);
+                AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Manhattan);
             else
-                AStar.Heuristic = Container.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
+                AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
             while (!IsAGoodMap)
             {
                 var nodes = new List<Node>();
                 var _map = new Map(width, height)
                 {
-                    AllowDiagonal = d
+                    Diagonal = d
                 };
 
                 var size = Convert.ToInt32((width * height) * seed);

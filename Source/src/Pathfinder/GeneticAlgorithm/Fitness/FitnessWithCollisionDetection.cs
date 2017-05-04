@@ -8,7 +8,7 @@ namespace Pathfinder.Fitness
         IHeuristic Heuristic;
         public FitnessWithCollisionDetection()
         {
-            Heuristic = Container.Resolve<IHeuristic>();
+            Heuristic = PFContainer.Resolve<IHeuristic>();
         }
         public double Calc(IGenome genome)
         {

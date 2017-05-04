@@ -19,7 +19,7 @@ namespace Pathfinder.Selection
             for (int i = 0; i < weight.Length; i++)
                 weight_sum += weight[i];
             // get a random value
-            var value = Container.Resolve<IRandom>()
+            var value = PFContainer.Resolve<IRandom>()
                             .NextDouble() * weight_sum;
             // locate the random value based on the weights
             for (int i = 0; i < weight.Length; i++)

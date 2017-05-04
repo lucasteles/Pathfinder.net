@@ -1,7 +1,4 @@
 ﻿using Pathfinder.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 namespace Pathfinder.Factories
 {
     public class RandomFactory : IFactory<IRandom>
@@ -11,11 +8,15 @@ namespace Pathfinder.Factories
         {
             Rand = new GARandom();
         }
-        public IRandom GetImplementation()
-            => Rand;
-        public IRandom GetImplementation(int option)
+
+        public IRandom GetImplementation(int option = 0)
         {
-            throw new NotImplementedException();
+            return Rand;
+        }
+
+        public IRandom GetImplementation()
+        {
+            return Rand;
         }
     }
 }

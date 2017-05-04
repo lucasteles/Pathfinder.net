@@ -1,12 +1,9 @@
 ﻿using Pathfinder.Abstraction;
 using Pathfinder.MapGenerators;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Factories
 {
-    public class MapGeneratorFactory : IFactory<IMapGenerator>
+    public class MapGeneratorFactory : IFactory<IMapGenerator, MapGeneratorEnum>
     {
         public static IMapGenerator GetFileMapGeneratorImplementation()
             => new FileMapGenerator();
@@ -16,10 +13,8 @@ namespace Pathfinder.Factories
             => new RandomMapGenerator();
         public static IMapGenerator GetStandardMapGeneratorImplementation()
             => new StandardMapGenerator();
-        public IMapGenerator GetImplementation()
-            => Decide(Settings.MapOrigin);
-        public IMapGenerator GetImplementation(int option)
-            => Decide((MapGeneratorEnum)option);
+        public IMapGenerator GetImplementation(MapGeneratorEnum option)
+            => Decide(option);
         private static IMapGenerator Decide(MapGeneratorEnum option)
         {
             switch (option)

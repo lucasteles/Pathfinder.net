@@ -1,27 +1,47 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-namespace Pathfinder.Abstraction
+
+namespace Pathfinder
 {
     public interface IMap
     {
+        Node this[int y, int x] { get; set; }
+
+        DiagonalMovement Diagonal { get; set; }
+        Node EndNode { get; set; }
         int Height { get; set; }
-        int Width { get; set; }
         Node[,] Nodes { get; set; }
-        Node this[int x, int y] { get; set; }
-        Node GetDirectionNode(Node node, bool ByRef=true, bool valid = true);
-        Node GetDirectionNode(Node node, DirectionMovement direction, bool ByRef=true, bool valid = true);
+        Node StartNode { get; set; }
+        int Width { get; set; }
+
+        void AddInClosedList(Node node);
+        void AddInOpenList(Node node);
+        void Clear();
+        int ClosedListCount();
+        void DefineAllNodes();
+        void DefineAllNodes(IList<Node> nodes);
+        void DefineNode(Node node);
+        Node GetDirectionNode(Node node, bool ByRef = true, bool valid = true);
+        Node GetDirectionNode(Node node, DirectionMovement direction, bool ByRef = true, bool valid = true);
+        int GetMaxExpandedNodes();
+        void SetMaxExpandedNodes(int value);
         IList<Node> GetNeighbors(Node node, bool ByRef = true, bool valid = true);
         IList<Node> GetNeighbors(Node node, DiagonalMovement diag, bool ByRef = true, bool valid = true);
-        Node StartNode { get; set; }
-        Node EndNode { get; set; }
-        void DefineNode(Node node);
-        void DefineAllNodes(IList<Node> nodes);
-        void DefineAllNodes();
+        IEnumerable<Node> GetNodesInClosedLit();
+        IEnumerable<Node> GetNodesInOpenList();
+        IEnumerable<Node> GetPath();
+        bool IsClosed(Node e);
+        bool IsInside(int y, int x);
+        bool IsOpen(Node e);
+        bool IsWalkableAt(int y, int x);
+        bool IsWalkableAt(Node node);
+        void OrderOpenList(Func<Node, object> predicate);
+        int OpenListCount();
+        Node PopOpenList();
+        void PushInOpenList(Node node);
+        void UpdateClosedList(IList<Node> newList);
+        void UpdateMaxNodes();
+        void UpdateOpenList(IList<Node> newList);
         bool ValidMap();
-        void Clear();
-        DiagonalMovement? AllowDiagonal { get; set; }
     }
 }

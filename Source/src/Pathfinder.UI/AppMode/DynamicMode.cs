@@ -40,11 +40,11 @@ namespace Pathfinder.UI.AppMode
                 }
             }
             Settings.AllowDiagonal = (DiagonalMovement)d;
-            var heuristic = Container.Resolve<IHeuristic>(h);
-            var finder = Container.Resolve<IFinder>(pf);
+            var heuristic = PFContainer.Resolve<IHeuristic>(h);
+            var finder = PFContainer.Resolve<IFinder>(pf);
             finder.Heuristic = heuristic;
-            var generator = Container.Resolve<IMapGenerator>(m);
-            var viewer = Container.Resolve<IViewer>(v);
+            var generator = PFContainer.Resolve<IMapGenerator>(m);
+            var viewer = PFContainer.Resolve<IViewer>(v);
             viewer.SetFinder(finder);
             viewer.Run(generator.DefineMap(mapGenArgs));
         }

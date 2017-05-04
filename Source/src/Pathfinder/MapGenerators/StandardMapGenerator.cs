@@ -35,17 +35,17 @@ namespace Pathfinder.MapGenerators
             if (diagonal.HasValue)
                 d = diagonal.Value;
             // finder para valida se o mapa é passavel
-            var AStar = Container.Resolve<IFinder>((int)FinderEnum.AStar);
+            var AStar = PFContainer.Resolve<IFinder>((int)FinderEnum.AStar);
 
             AStar.DiagonalMovement = d;
-            AStar.Heuristic = Container.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
+            AStar.Heuristic = PFContainer.Resolve<IHeuristic>((int)HeuristicEnum.Octile);
             var subgrid = new List<Node>();
             while (!IsAGoodMap)
             {
                 var nodes = new List<Node>();
                 var _map = new Map(width, height)
                 {
-                    AllowDiagonal = d
+                    Diagonal = d
                 };
 
                 var size = Convert.ToInt32(blocksize * blocksize * seed);

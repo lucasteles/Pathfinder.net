@@ -9,7 +9,7 @@ namespace Pathfinder.Mutation
     {
         public override  IGenome Calc(IGenome baby)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             if (rand.NextDouble() > MutationRate || baby.ListNodes.Count < 3)
                 return baby;
             var listcount = baby.ListNodes.Count;

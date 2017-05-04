@@ -14,7 +14,7 @@ namespace Pathfinder.UI.UI
         public static void Main(string[] args)
         {
             RegisterConfig.BindProjectRegisters();
-            var app = Container.Resolve<IAppMode>();
+            var app = PFContainer.Resolve<IAppMode>();
             app.Run();
         }
     }

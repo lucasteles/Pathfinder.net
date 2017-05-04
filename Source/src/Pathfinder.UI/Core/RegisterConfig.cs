@@ -1,6 +1,6 @@
 ﻿using Pathfinder.UI.Abstraction;
 using Pathfinder.UI.Factories;
-using static Pathfinder.Container;
+using static Pathfinder.PFContainer;
 
 namespace Pathfinder.UI
 {

@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Pathfinder.Abstraction;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Pathfinder.Abstraction;
-using System.Reflection;
 namespace Pathfinder
 {
     public class Genome : IGenome
@@ -24,14 +20,14 @@ namespace Pathfinder
             Map = genome.Map;
             ListNodes = Copy(genome.ListNodes);
         }
-        public Genome(IMap map, DiagonalMovement diagonal)
+        public Genome(IMap map)
         {
             Map = map;
-            ListNodes = RouteFinding(diagonal);
+            ListNodes = RouteFinding(map.Diagonal);
         }
         public List<Node> RouteFinding(DiagonalMovement diagonal)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             var listnode = new List<Node>();
             var run = true;
             var node = new Node(Map.StartNode);

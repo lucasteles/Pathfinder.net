@@ -2,12 +2,9 @@
 using Pathfinder.Abstraction;
 using Pathfinder.Fitness;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Factories
 {
-    public class FitnessFactory : IFactory<IFitness>
+    public class FitnessFactory : IFactory<IFitness, FitnessEnum>
     {
         public static IFitness GetHeuristicImplementation()
             => new FitnessHeuristic();
@@ -17,10 +14,9 @@ namespace Pathfinder.Factories
             => new FitnessWithCollisionDetection();
         public static IFitness GetCollisionDetectionAndCirclicValidationImplementation()
             => new FitnessWithCollisionDetectionAndCirclicValidation();
-        public IFitness GetImplementation()
-            => Decide(GASettings.FitnessAlgorithm);
-        public IFitness GetImplementation(int option)
-            => Decide((FitnessEnum)option);
+        public IFitness GetImplementation(FitnessEnum option)
+            => Decide(option);
+
         private static IFitness Decide(FitnessEnum option)
         {
             switch (option)

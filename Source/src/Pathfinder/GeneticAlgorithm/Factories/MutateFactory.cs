@@ -2,12 +2,9 @@
 using Pathfinder.Abstraction;
 using Pathfinder.Mutation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 namespace Pathfinder.Factories
 {
-    public class MutateFactory  : IFactory<IMutate>
+    public class MutateFactory : IFactory<IMutate, MutateEnum>
     {
         public static IMutate GetEMImplementation()
             => new MutateEM();
@@ -23,10 +20,9 @@ namespace Pathfinder.Factories
             => new MutateSM();
         public static IMutate GetBitwiseImplementation()
             => new MutateBitwise();
-        public IMutate GetImplementation()
-           => Decide(GASettings.MutationAlgorithm);
-        public IMutate GetImplementation(int option)
-            => Decide((MutateEnum)option);
+        public IMutate GetImplementation(MutateEnum option)
+            => Decide(option);
+
         private static IMutate Decide(MutateEnum option)
         {
             switch (option)

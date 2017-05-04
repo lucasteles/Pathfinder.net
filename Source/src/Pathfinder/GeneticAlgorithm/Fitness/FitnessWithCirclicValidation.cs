@@ -11,7 +11,7 @@ namespace Pathfinder.Fitness
     {
         IHeuristic Heuristic;
         public FitnessWithCirclicValidation() {
-            Heuristic = Container.Resolve<IHeuristic>();
+            Heuristic = PFContainer.Resolve<IHeuristic>();
         }
         public double Calc(IGenome genome)
         {

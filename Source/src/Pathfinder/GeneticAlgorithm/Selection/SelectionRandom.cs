@@ -6,7 +6,7 @@ namespace Pathfinder.Selection
     {
         public IGenome Select(List<IGenome> listnode)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             var ind = rand.Next(0, listnode.Count);
             return listnode[ind];
         }

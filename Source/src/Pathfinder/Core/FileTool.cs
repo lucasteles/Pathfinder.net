@@ -97,7 +97,7 @@ namespace Pathfinder
             {
                 StartNode = startNode,
                 EndNode = endNode,
-                AllowDiagonal = d
+                Diagonal = d
             };
             ret.DefineAllNodes(nodes);
             ret.DefineNode(ret.StartNode);
@@ -134,8 +134,8 @@ namespace Pathfinder
                 filename = $"map_{map.Width}x{map.Height}_{now.Year}{now.Month}{now.Day}_{now.Hour}-{now.Minute}-{now.Second}.txt";
                 filename = Path.Combine(folder, filename);
             }
-            if (map.AllowDiagonal != null)
-                text = $"?diagonal={map.AllowDiagonal};\n{text}";
+            if (map.Diagonal != null)
+                text = $"?diagonal={map.Diagonal};\n{text}";
             File.WriteAllText(filename, text);
         }
     }

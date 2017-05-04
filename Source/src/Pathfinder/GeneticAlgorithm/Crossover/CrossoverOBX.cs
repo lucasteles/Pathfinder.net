@@ -9,7 +9,7 @@ namespace Pathfinder.Crossover
     {
         public override CrossoverOperation Calc(CrossoverOperation Operation)
         {
-            var rand = Container.Resolve<IRandom>();
+            var rand = PFContainer.Resolve<IRandom>();
             if (rand.NextDouble() > CrossoverRate || Operation.IsEqual())
                 return Operation;
             var babymom = CrossoverOperation.Copy(Operation.Mom);

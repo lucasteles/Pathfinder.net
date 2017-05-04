@@ -44,14 +44,14 @@ namespace Pathfinder.UI.AppMode
                     Directory.CreateDirectory(folder);
 
                 //generate maps
-                var generator = Container.Resolve<IMapGenerator>((int)mapType);
+                var generator = PFContainer.Resolve<IMapGenerator>((int)mapType);
                 for (int i = 0; i < qtdMaps; i++)
                 {
                     Console.Clear();
                     Console.WriteLine($"Generating maps({movement},{mapType})...");
                     DrawTextProgressBar(i, qtdMaps);
                     var map = generator.DefineMap(diagonal: movement);
-                    map.AllowDiagonal = movement;
+                    map.Diagonal = movement;
                     FileTool.SaveFileFromMap(map, Path.Combine(folder, i.ToString().PadLeft(qtdMaps.ToString().Length, '0') + ".txt"));
                 }
             }
@@ -82,8 +82,8 @@ namespace Pathfinder.UI.AppMode
                 {
                     foreach (var _h in heuristics)
                     {
-                        var h = Container.Resolve<IHeuristic>(_h);
-                        var finder = Container.Resolve<IFinder>(_finder);
+                        var h = PFContainer.Resolve<IHeuristic>(_h);
+                        var finder = PFContainer.Resolve<IFinder>(_finder);
                         finder.Heuristic = h;
                         if (finder is IGeneticAlgorithm)
                         {
@@ -95,12 +95,12 @@ namespace Pathfinder.UI.AppMode
                                             {
                                                 GC.Collect();
                                                 GC.WaitForPendingFinalizers();
-                                                var GAFinder = (IGeneticAlgorithm)Container.Resolve<IFinder>(_finder);
+                                                var GAFinder = (IGeneticAlgorithm)PFContainer.Resolve<IFinder>(_finder);
                                                 GAFinder.Heuristic = h;
-                                                GAFinder.Crossover = Container.Resolve<ICrossover>(Crossover[cross]);
-                                                GAFinder.Mutate = Container.Resolve<IMutate>(Mutation[mut]);
-                                                GAFinder.Fitness = Container.Resolve<IFitness>(Fitness[fit]);
-                                                GAFinder.Selection = Container.Resolve<ISelection>(Selection[sel]);
+                                                GAFinder.Crossover = PFContainer.Resolve<ICrossover>(Crossover[cross]);
+                                                GAFinder.Mutate = PFContainer.Resolve<IMutate>(Mutation[mut]);
+                                                GAFinder.Fitness = PFContainer.Resolve<IFitness>(Fitness[fit]);
+                                                GAFinder.Selection = PFContainer.Resolve<ISelection>(Selection[sel]);
                                                 var helper = $"\n                n:{j},cx:{GAFinder.Crossover.GetType().Name},m:{GAFinder.Mutate.GetType().Name},f:{GAFinder.Fitness.GetType().Name},s:{GAFinder.Selection.GetType().Name}";
                                                 var csv = new TextWrapper();
                                                 csv = RunStep(csv, i, fileCount, map, h, GAFinder, mapType, helper);
@@ -150,7 +150,7 @@ namespace Pathfinder.UI.AppMode
             csv.MapType = mapType.ToString();
             csv.Alg = finder.Name;
             csv.Heuristic = h.GetType().Name;
-            csv.Diagonal = map.AllowDiagonal.HasValue ? map.AllowDiagonal.Value.ToString() : finder.DiagonalMovement.ToString();
+            csv.Diagonal = map.Diagonal.HasValue ? map.Diagonal.Value.ToString() : finder.DiagonalMovement.ToString();
             Console.CursorLeft = 0;
             if (Console.CursorTop > 0)
             {
