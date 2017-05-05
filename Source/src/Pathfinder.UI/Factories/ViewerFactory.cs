@@ -8,8 +8,16 @@ namespace Pathfinder.CLI.Factories
     {
         public static IViewer GetConsoleViewerImplementation()
          => new ConsoleViewer();
-        public static IViewer GetOpenGlViewerImplementation()
-            => new OpenGlViewer();
+        public static IViewer GetOpenGlViewerImplementation(int blocksize = 0)
+        {
+            var result = new OpenGlViewer();
+
+            if (blocksize > 0)
+                result.BlockSize = blocksize;
+
+            return result;
+        }
+
         public IViewer GetImplementation(ViewerEnum option)
             => Decide(option);
         private static IViewer Decide(ViewerEnum option)

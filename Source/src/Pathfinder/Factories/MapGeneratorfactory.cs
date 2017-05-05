@@ -5,8 +5,16 @@ namespace Pathfinder.Factories
 {
     public class MapGeneratorFactory : IFactory<IMapGenerator, MapGeneratorEnum>
     {
-        public static IMapGenerator GetFileMapGeneratorImplementation()
-            => new FileMapGenerator();
+        public static IMapGenerator GetFileMapGeneratorImplementation(string filename = "")
+        {
+            var result = new FileMapGenerator
+            {
+                FileName = filename
+            };
+
+
+            return result;
+        }
         public static IMapGenerator GetStaticMapGeneratorImplementation()
             => new StaticMapGenerator();
         public static IMapGenerator GetRandomMapGeneratorImplementation()

@@ -76,6 +76,7 @@ namespace Pathfinder.MapGenerators
                 subgrid = new List<Node>();
             }
 
+            ret.Clear();
             return ret;
         }
         private Node RandNode(Random rand, int width, int height, bool wall)

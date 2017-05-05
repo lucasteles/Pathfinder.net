@@ -52,7 +52,7 @@ namespace Pathfinder.MapGenerators
                 }
                 GridMap = new List<Node>();
             }
-
+            ret.Clear();
             return ret;
         }
 

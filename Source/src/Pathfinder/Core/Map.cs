@@ -232,6 +232,10 @@ namespace Pathfinder
         }
         public void Clear()
         {
+            UpdateOpenList(new List<Node>());
+            UpdateClosedList(new List<Node>());
+            UpdateMaxNodes();
+
             for (int i = 0; i < Width; i++)
                 for (int j = 0; j < Height; j++)
                 {
