@@ -7,13 +7,13 @@ namespace Pathfinder
 {
     public class FileTool
     {
-        public static Char Start;
-        public static Char End;
-        public static Char Wall;
-        public static Char Path;
-        public static Char Empty;
-        public static Char Opened;
-        public static Char Closed;
+        public static Char Start = 'S';
+        public static Char End = 'E';
+        public static Char Wall = '#';
+        public static Char Path = '*';
+        public static Char Empty = '-';
+        public static Char Opened = '%';
+        public static Char Closed = '@';
 
         public FileTool()
         {
@@ -167,14 +167,11 @@ namespace Pathfinder
         public static void SaveFileFromMap(IMap map, string filename)
         {
             var text = GetTextRepresentation(map);
-            var folder = "maps";
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
+
             var now = DateTime.Now;
             if (string.IsNullOrEmpty(filename))
             {
                 filename = $"map_{map.Width}x{map.Height}_{now.Year}{now.Month}{now.Day}_{now.Hour}-{now.Minute}-{now.Second}.txt";
-                filename = System.IO.Path.Combine(folder, filename);
             }
             text = $"?diagonal={map.Diagonal};\n{text}";
             File.WriteAllText(filename, text);

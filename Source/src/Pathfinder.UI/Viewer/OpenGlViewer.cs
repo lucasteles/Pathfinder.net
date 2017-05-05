@@ -1,6 +1,6 @@
 ﻿using Pathfinder.Abstraction;
-using Pathfinder.UI.Abstraction;
-namespace Pathfinder.UI.Viewer
+using Pathfinder.CLI.Abstraction;
+namespace Pathfinder.CLI.Viewer
 {
     public class OpenGlViewer : IViewer
     {

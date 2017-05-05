@@ -1,5 +1,5 @@
 ﻿using Pathfinder.Abstraction;
-namespace Pathfinder.UI.Abstraction
+namespace Pathfinder.CLI.Abstraction
 {
     public interface IViewer
     {

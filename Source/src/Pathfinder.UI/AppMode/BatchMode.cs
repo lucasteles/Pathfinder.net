@@ -4,7 +4,7 @@
 //using System.Linq;
 //using System.Reflection;
 //using System.Text;
-//namespace Pathfinder.UI.AppMode
+//namespace Pathfinder.CLI.AppMode
 //{
 //    public class BatchMode
 //    {

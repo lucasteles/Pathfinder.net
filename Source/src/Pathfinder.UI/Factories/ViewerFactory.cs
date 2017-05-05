@@ -1,8 +1,8 @@
 ﻿using Pathfinder.Abstraction;
-using Pathfinder.UI.Abstraction;
-using Pathfinder.UI.Viewer;
+using Pathfinder.CLI.Abstraction;
+using Pathfinder.CLI.Viewer;
 using System;
-namespace Pathfinder.UI.Factories
+namespace Pathfinder.CLI.Factories
 {
     public class ViewerFactory : IFactory<IViewer, ViewerEnum>
     {

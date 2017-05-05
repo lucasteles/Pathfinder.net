@@ -11,10 +11,17 @@ namespace Pathfinder.Factories
             => new StaticMapGenerator();
         public static IMapGenerator GetRandomMapGeneratorImplementation()
             => new RandomMapGenerator();
-        public static IMapGenerator GetStandardMapGeneratorImplementation()
-            => new StandardMapGenerator();
+        public static IMapGenerator GetStandardMapGeneratorImplementation(int paternSize = 0)
+        {
+            var result = new StandardMapGenerator();
+
+            if (paternSize > 0)
+                result.Blocksize = paternSize;
+
+            return result;
+        }
         public IMapGenerator GetImplementation(MapGeneratorEnum option)
-            => Decide(option);
+        => Decide(option);
         private static IMapGenerator Decide(MapGeneratorEnum option)
         {
             switch (option)

@@ -1,12 +1,12 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Pathfinder.Abstraction;
-using Pathfinder.UI.Abstraction;
+using Pathfinder.CLI.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-namespace Pathfinder.UI.Viewer
+namespace Pathfinder.CLI.Viewer
 {
     public class OpenGlWindow : GameWindow
     {

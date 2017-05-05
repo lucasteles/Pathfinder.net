@@ -1,9 +1,4 @@
-﻿using Pathfinder.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection;
+﻿using System.Reflection;
 namespace Pathfinder
 {
     public class Node
@@ -73,7 +68,7 @@ namespace Pathfinder
         {
             return base.GetHashCode();
         }
-        public static bool operator == (Node node1, Node node2)
+        public static bool operator ==(Node node1, Node node2)
         {
             if (object.ReferenceEquals(node1, null))
             {
@@ -91,7 +86,7 @@ namespace Pathfinder
         }
         public override string ToString()
         {
-            return $"{{{this.X},{this.Y},{(!Walkable?"Wall": nameof(Walkable))},{Cost}}} {Direction} {(Collision?" COLIDE!":"")}";
+            return $"{{{this.X},{this.Y},{(!Walkable ? "Wall" : nameof(Walkable))},{Cost}}} {Direction} {(Collision ? " COLIDE!" : "")}";
         }
     }
 }

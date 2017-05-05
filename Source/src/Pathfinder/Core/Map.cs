@@ -21,8 +21,8 @@ namespace Pathfinder
 
 
         protected int _maxExpandedNodes { get; set; } = 0;
-        private IList<Node> _openList { get; set; }
-        private IList<Node> _closedList { get; set; }
+        private IList<Node> _openList { get; set; } = new List<Node>();
+        private IList<Node> _closedList { get; set; } = new List<Node>();
 
         public virtual int GetMaxExpandedNodes() => _maxExpandedNodes;
 

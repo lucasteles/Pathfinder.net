@@ -33,7 +33,7 @@ namespace Pathfinder.MapGenerators
                 var nodes = new List<Node>();
                 var _map = new Map(diagonal, width, height);
 
-                var size = Convert.ToInt32(blocksize * blocksize * seed);
+                var size = Convert.ToInt32(blocksize * blocksize * (seed / 100));
                 var rand = new Random();
                 while (size > 0)
                 {

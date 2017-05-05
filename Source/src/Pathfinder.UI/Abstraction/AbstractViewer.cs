@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Pathfinder.UI.Abstraction
+namespace Pathfinder.CLI.Abstraction
 {
     public abstract class AbstractViewer : IViewer
     {

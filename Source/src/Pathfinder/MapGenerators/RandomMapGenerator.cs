@@ -27,7 +27,7 @@ namespace Pathfinder.MapGenerators
                 var nodes = new List<Node>();
                 var _map = new Map(diagonal, width, height);
 
-                var size = Convert.ToInt32((width * height) * seed);
+                var size = Convert.ToInt32((width * height) * (seed / 100M));
                 var rand = new Random();
 
                 while (size > 0)

@@ -1,8 +1,8 @@
 ﻿using Pathfinder.Abstraction;
-using Pathfinder.UI.Abstraction;
+using Pathfinder.CLI.Abstraction;
 using System;
 using System.Threading;
-namespace Pathfinder.UI.Viewer
+namespace Pathfinder.CLI.Viewer
 {
     public class ConsoleViewer : AbstractViewer
     {
