@@ -7,7 +7,7 @@ namespace Pathfinder.UI.Abstraction
     public abstract class AbstractViewer : IViewer
     {
         protected IFinder _finder;
-        public abstract void Run(IMap map);
+        public abstract void Run(IMap map, IHeuristic h);
         protected AbstractViewer()
         {
         }
@@ -37,13 +37,13 @@ namespace Pathfinder.UI.Abstraction
         public abstract void Start();
         public static void ShowStepLog(IFinder finder, FinderEventArgs e)
         {
-            Console.WriteLine($"Alg={finder.Name}\nDiagonal={finder.DiagonalMovement.ToString()}\nMax Expanded Nodes = {finder.GetMaxExpandedNodes()}\nProcess Time = {finder.GetProcessedTime()} ms\nSteps|Generations:{e.Step} ");
+            Console.WriteLine($"Alg={finder.Name}\nDiagonal={e.GridMap.Diagonal.ToString()}\nMax Expanded Nodes = {e.GridMap.GetMaxExpandedNodes()}\nProcess Time = {finder.GetProcessedTime()} ms\nSteps|Generations:{e.Step} ");
         }
-        public static void ShowEndLog(IFinder finder, IList<Node> path, FinderEventArgs e)
+        public static void ShowEndLog(IFinder finder, IEnumerable<Node> path, FinderEventArgs e)
         {
             if (path?.Any(x => !x.Walkable) ?? false)
                 throw new Exception("Why is there a wall on the path?");
-            Console.WriteLine($"Alg={finder.Name}\nDiagonal={finder.DiagonalMovement.ToString()}\nMax Expanded Nodes = {finder.GetMaxExpandedNodes()}\nProcess Time = {finder.GetProcessedTime()} ms\nSteps|Generation:{e.Step}");
+            Console.WriteLine($"Alg={finder.Name}\nDiagonal={e.GridMap.Diagonal.ToString()}\nMax Expanded Nodes = {e.GridMap.GetMaxExpandedNodes()}\nProcess Time = {finder.GetProcessedTime()} ms\nSteps|Generation:{e.Step}");
             if (e.Finded)
                 Console.WriteLine($"Path Length: {path.OrderBy(x => x.G).Last().G}");
             else

@@ -4,6 +4,7 @@ using Pathfinder.Abstraction;
 using Pathfinder.UI.Abstraction;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 namespace Pathfinder.UI.Viewer
 {
@@ -13,11 +14,11 @@ namespace Pathfinder.UI.Viewer
         int BlockSize;
         readonly int FPS = 60;
         public bool drawPath;
-        public List<Node> path;
+        public IEnumerable<Node> Path;
         IFinder _finder;
         IMap GridMap;
         readonly Thread finderThread;
-        public OpenGlWindow(IMap map, IFinder finder, int blocksize)
+        public OpenGlWindow(IMap map, IFinder finder, IHeuristic h, int blocksize)
              : base(map.Width * blocksize, map.Height * blocksize)
         {
             Title = "PathFinding";
@@ -31,7 +32,7 @@ namespace Pathfinder.UI.Viewer
 
 
             GridMap = map;
-            finderThread = new Thread(e => { _finder.Find(map); });
+            finderThread = new Thread(e => { _finder.Find(map, h); });
             finderThread.Start();
         }
         private void LoopWraper(object sender, EventArgs _e)
@@ -47,10 +48,10 @@ namespace Pathfinder.UI.Viewer
             var e = (FinderEventArgs)_e;
             if (e.Finded)
             {
-                path = _finder.GetPath();
+                Path = GridMap.GetPath();
                 drawPath = true;
             }
-            AbstractViewer.ShowEndLog(_finder, path, e);
+            AbstractViewer.ShowEndLog(_finder, Path, e);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -63,6 +64,7 @@ namespace Pathfinder.UI.Viewer
         }
         public void DrawMap(IMap map, bool showPath = false)
         {
+
             for (int i = 0; i < map.Height; i++)
                 for (int j = 0; j < map.Width; j++)
                 {
@@ -72,13 +74,13 @@ namespace Pathfinder.UI.Viewer
                         c = Color.Green;
                     else if (node == map.EndNode)
                         c = Color.Red;
-                    else if (showPath && path.Exists(o => o.Equals(node)))
+                    else if (showPath && Path.ToList().Exists(o => o.Equals(node)))
                         c = Color.Yellow;
                     else if (!node.Walkable)
                         c = Color.DarkGray;
-                    else if (_finder.IsClosed(node))
+                    else if (GridMap.IsClosed(node))
                         c = Color.LightGreen;
-                    else if (_finder.IsOpen(node))
+                    else if (GridMap.IsOpen(node))
                         c = Color.LightBlue;
                     DrawBlock(node.X * BlockSize, node.Y * BlockSize, BlockSize, c);
                 }

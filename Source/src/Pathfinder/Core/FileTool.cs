@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
 namespace Pathfinder
 {
     public class FileTool
@@ -10,6 +12,8 @@ namespace Pathfinder
         public static Char Wall;
         public static Char Path;
         public static Char Empty;
+        public static Char Opened;
+        public static Char Closed;
 
         public FileTool()
         {
@@ -37,6 +41,38 @@ namespace Pathfinder
             ret = ret.Remove(ret.LastIndexOf("\n"));
             return ret;
         }
+
+
+        public static string GetTextRepresentation(IMap map, bool showOpenNodes, IEnumerable<Node> path = null)
+        {
+            var ret = string.Empty;
+            for (int i = 0; i < map.Height; i++)
+            {
+                for (int j = 0; j < map.Width; j++)
+                {
+                    var c = ' ';
+                    var node = map[i, j];
+                    if (node == map.StartNode)
+                        c = Start;
+                    else if (node == map.EndNode)
+                        c = End;
+                    else if (path != null && path.ToList().Contains(node))
+                        c = Path;
+                    else if (!node.Walkable)
+                        c = Wall;
+                    else if (showOpenNodes && map.IsClosed(node))
+                        c = Closed;
+                    else if (showOpenNodes && map.IsOpen(node))
+                        c = Opened;
+                    else
+                        c = Empty;
+                    ret += c.ToString();
+                }
+                ret += "\n";
+            }
+            return ret;
+        }
+
         public static IMap ReadMapFromFile(string fileName)
         {
             var width = 0;

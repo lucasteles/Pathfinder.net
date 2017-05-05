@@ -5,10 +5,4 @@
         Console,
         OpenGL
     }
-    public enum AppModeEnum
-    {
-        SingleRun,
-        Dynamic,
-        BatchMode
-    }
 }

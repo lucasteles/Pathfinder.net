@@ -1,23 +1,20 @@
-﻿
-
-using OpenTK.Graphics;
-using Pathfinder.Abstraction;
+﻿using Pathfinder.Abstraction;
 using Pathfinder.UI.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 namespace Pathfinder.UI.Viewer
 {
     public class OpenGlViewer : IViewer
     {
         OpenGlWindow window;
         IFinder _finder;
+        public int BlockSize { get; set; } = 10;
+
         public OpenGlViewer()
         {
         }
-        public void Run(IMap map)
+
+        public void Run(IMap map, IHeuristic h)
         {
-            window = new OpenGlWindow(map, _finder,Settings.OpenGlBlockSize );
+            window = new OpenGlWindow(map, _finder, h, BlockSize);
             window.Run();
         }
         public void SetFinder(IFinder finder)

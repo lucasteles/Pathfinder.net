@@ -8,6 +8,6 @@
 
         public static int POPULATION_SIZE = 100;
         public static int GENERATION_LIMIT = 1000;
-        public static int BEST_SOLUTION_TO_PICK = 0;
+        public static int BEST_SOLUTION_TO_PICK;
     }
 }
