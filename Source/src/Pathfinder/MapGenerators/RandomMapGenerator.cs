@@ -53,6 +53,7 @@ namespace Pathfinder.MapGenerators
                 GridMap = new List<Node>();
             }
             ret.Clear();
+            ret.MapType = MapGeneratorEnum.Random;
             return ret;
         }
 

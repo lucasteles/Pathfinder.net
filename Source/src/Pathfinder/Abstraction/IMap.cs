@@ -6,6 +6,7 @@ namespace Pathfinder
     public interface IMap
     {
         Node this[int y, int x] { get; set; }
+        MapGeneratorEnum MapType { get; set; }
 
         DiagonalMovement Diagonal { get; set; }
         Node EndNode { get; set; }

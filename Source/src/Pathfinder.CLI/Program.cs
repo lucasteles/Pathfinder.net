@@ -16,11 +16,19 @@ namespace Pathfinder.CLI.UI
 #endif
 
             return Parser.Default
-                .ParseArguments<MapGenerationOption, MapViewerOption, FinderOption>(args)
+                .ParseArguments<
+                            MapGenerationOption,
+                            MapViewerOption,
+                            FinderOption,
+                            GAFinderOption,
+                            BatchOption
+                          >(args)
                 .MapResult(
                       (MapGenerationOption opt) => MapGenerationCommand.RunMapGeneration(opt),
                       (MapViewerOption opt) => MapViewerCommand.RunMapViewer(opt),
                       (FinderOption opt) => FinderCommand.RunMapFinder(opt),
+                      (GAFinderOption opt) => FinderCommand.RunGAMapFinder(opt),
+                      (BatchOption opt) => BatchCommand.RunBatch(opt),
                       errs => 1
                 );
         }

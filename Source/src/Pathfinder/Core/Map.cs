@@ -23,6 +23,7 @@ namespace Pathfinder
         protected int _maxExpandedNodes { get; set; } = 0;
         private IList<Node> _openList { get; set; } = new List<Node>();
         private IList<Node> _closedList { get; set; } = new List<Node>();
+        public MapGeneratorEnum MapType { get; set; }
 
         public virtual int GetMaxExpandedNodes() => _maxExpandedNodes;
 

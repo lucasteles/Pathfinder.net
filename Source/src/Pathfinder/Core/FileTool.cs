@@ -12,8 +12,8 @@ namespace Pathfinder
         public static Char Wall = '#';
         public static Char Path = '*';
         public static Char Empty = '-';
-        public static Char Opened = '%';
-        public static Char Closed = '@';
+        public static Char Opened = 'O';
+        public static Char Closed = 'C';
 
         public FileTool()
         {
@@ -83,7 +83,11 @@ namespace Pathfinder
             var x = 0;
             var y = 0;
             byte dig;
-            DiagonalMovement? d = null;
+
+
+            var mapVars = new Dictionary<string, string>();
+
+
             if (fileName == "")
                 throw new Exception("fileName is empty!");
 
@@ -108,7 +112,7 @@ namespace Pathfinder
                             var line = new List<char>();
                             while (chrDig != 10)
                                 line.Add(chrDig = reader.ReadChar());
-                            ReadMapSettings(string.Join("", line), out d);
+                            mapVars = ReadMapSettings(string.Join("", line), mapVars);
                             continue;
                         }
                         if (chrDig == Start)
@@ -132,6 +136,27 @@ namespace Pathfinder
             width = x;
             height = y;
 
+            DiagonalMovement? d = null;
+            MapGeneratorEnum? t = MapGeneratorEnum.File;
+
+            foreach (var item in mapVars)
+            {
+                switch (item.Key)
+                {
+                    case "diagonal":
+                        d = (DiagonalMovement)Enum.Parse(typeof(DiagonalMovement), item.Value);
+                        break;
+
+                    case "type":
+                        t = (MapGeneratorEnum)Enum.Parse(typeof(MapGeneratorEnum), item.Value);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+
             if (d == null)
                 throw new Exception("No diagonal seted on mapfile");
 
@@ -139,6 +164,7 @@ namespace Pathfinder
             {
                 StartNode = startNode,
                 EndNode = endNode,
+                MapType = t.Value
             };
 
             ret.DefineAllNodes(nodes);
@@ -148,33 +174,37 @@ namespace Pathfinder
                 throw new Exception("Invalid map configuration");
             return ret;
         }
-        private static void ReadMapSettings(string line, out DiagonalMovement? d)
+        private static Dictionary<string, string> ReadMapSettings(string line, Dictionary<string, string> vars)
         {
-            const string diagvar = "diagonal=";
-            d = null;
-            if (line.Contains(diagvar))
-            {
-                var diag = line.Substring(line.IndexOf(diagvar) + diagvar.Length);
-                diag = diag.Substring(0, diag.IndexOf(";"));
-                var diags = Enum.GetValues(typeof(DiagonalMovement));
-                for (int i = 0; i < diags.Length; i++)
-                    if (diag.Contains(((DiagonalMovement)diags.GetValue(i)).ToString()))
-                    {
-                        d = (DiagonalMovement)diags.GetValue(i);
-                    }
-            }
+
+            var split = line.Split('=');
+            var key = split[0].Replace("?", "");
+            var value = split[1].Replace(";", "");
+
+            vars.Add(key, value);
+
+            return vars;
+
         }
-        public static void SaveFileFromMap(IMap map, string filename)
+        public static void SaveFileFromMap(IMap map, string filename, string directoryname = "")
         {
             var text = GetTextRepresentation(map);
+
+            if (!string.IsNullOrEmpty(directoryname))
+            {
+                if (!Directory.Exists(directoryname))
+                    Directory.CreateDirectory(directoryname);
+
+            }
 
             var now = DateTime.Now;
             if (string.IsNullOrEmpty(filename))
             {
-                filename = $"map_{map.Width}x{map.Height}_{now.Year}{now.Month}{now.Day}_{now.Hour}-{now.Minute}-{now.Second}.txt";
+                filename = $"map_{map.MapType}_{map.Diagonal}_{map.Width}x{map.Height}_{now.Year}{now.Month}{now.Day}_{now.Hour}-{now.Minute}-{now.Second}.txt";
             }
             text = $"?diagonal={map.Diagonal};\n{text}";
-            File.WriteAllText(filename, text);
+            text = $"?type={map.MapType};\n{text}";
+            File.WriteAllText(System.IO.Path.Combine(directoryname, filename), text);
         }
     }
 }

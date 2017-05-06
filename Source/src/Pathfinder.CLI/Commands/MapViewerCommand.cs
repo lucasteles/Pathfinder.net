@@ -9,6 +9,7 @@ namespace Pathfinder.CLI.Commands
     {
         public static int RunMapViewer(MapViewerOption option)
         {
+
             if (!File.Exists(option.Filename))
             {
                 Console.WriteLine("file not found!");

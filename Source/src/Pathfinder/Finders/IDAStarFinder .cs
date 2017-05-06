@@ -7,8 +7,8 @@ namespace Pathfinder.Finders
 {
     public class IDAStarFinder : AbstractFinder
     {
-        readonly bool TrackRecursion;
-        readonly double TimeLimit;
+        public bool TrackRecursion;
+        public double TimeLimit;
         int nodesVisited;
         public IDAStarFinder() : base("IDA* (IDA Star)")
         {

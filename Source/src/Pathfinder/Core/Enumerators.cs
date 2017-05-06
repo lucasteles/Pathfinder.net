@@ -41,4 +41,6 @@
         IfAtMostOneObstacle = 2,
         Always = 3
     }
+
+
 }

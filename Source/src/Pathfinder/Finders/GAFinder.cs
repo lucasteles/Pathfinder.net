@@ -37,6 +37,13 @@ namespace Pathfinder.Finders
 
         public override bool Find(IMap map, IHeuristic heuristic)
         {
+
+            if (Mutate == null || Crossover == null || Fitness == null || Selection == null)
+                throw new System.Exception("GA cant run without all operators");
+
+            if (Fitness.Heuristic == null)
+                Fitness.Heuristic = heuristic;
+
             var Adaptation = new Adaptation(map);
             var rand = RandomFactory.Rand;
             var startNode = map.StartNode;
@@ -66,6 +73,13 @@ namespace Pathfinder.Finders
                 endNode = best.Last();
                 if (endNode.Equals(map.EndNode))
                 {
+                    endNode.Direction = DirectionMovement.None;
+                    map.EndNode = endNode;
+
+                    map.UpdateClosedList(new List<Node>());
+                    map.UpdateOpenList(new List<Node>());
+
+
                     //if (!best.First().Equals(map.StartNode))
                     OnEnd(BuildArgs(step, map, true));
                     Generations = i;

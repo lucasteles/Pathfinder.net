@@ -13,6 +13,8 @@ namespace Pathfinder.CLI.Commands
         {
             IMapGenerator generator;
 
+
+
             generator = options.PatternLength > 0 ?
                             MapGeneratorFactory.GetStandardMapGeneratorImplementation(options.PatternLength)
                             : MapGeneratorFactory.GetRandomMapGeneratorImplementation();
@@ -21,6 +23,7 @@ namespace Pathfinder.CLI.Commands
             {
                 var filename = Path.GetFileName(options.Filename);
                 var ext = Path.GetExtension(options.Filename);
+
 
                 if (string.IsNullOrEmpty(ext))
                     ext = "txt";
@@ -55,7 +58,7 @@ namespace Pathfinder.CLI.Commands
                       );
 
 
-            FileTool.SaveFileFromMap(map, options.Filename);
+            FileTool.SaveFileFromMap(map, options.Filename, options.Directory);
 
         }
 

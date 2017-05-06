@@ -9,6 +9,9 @@ namespace Pathfinder.CLI.CommandParser
         [Option('f', "filename", HelpText = "map file name")]
         public string Filename { get; set; }
 
+        [Option('l', "location", HelpText = "folder to save maps", Default = "")]
+        public string Directory { get; set; }
+
         [Option('w', "width", Required = true, HelpText = "defines the map width")]
         public int Width { get; set; }
 
