@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>PF</AssemblyName>
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
     <PackageId>Pathfinder.UI</PackageId>
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
