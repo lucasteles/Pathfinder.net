@@ -27,8 +27,8 @@ namespace Pathfinder.CLI.Commands
             var ft = new FileTool();
             var now = DateTime.Now;
             var folder = option.Directory;
-            var dataFile = Path.Combine(folder, $"_data_{now.Year}{now.Month}{now.Day}_{now.Hour}{now.Minute}.csv");
-            var dataFileGA = Path.Combine(folder, $"_dataGA_{now.Year}{now.Month}{now.Day}_{now.Hour}{now.Minute}.csv");
+            var dataFile = "_data.csv";
+            var dataFileGA = "_dataGA.csv";
 
             var files = Directory.GetFiles(folder, "*.txt");
             var fileCount = files.Count();
@@ -38,13 +38,29 @@ namespace Pathfinder.CLI.Commands
             var Crossover = option.Crossover.ToArray();
             var Fitness = option.Fitness.ToArray();
             var Selection = option.Selection.Cast<SelectionEnum>().ToArray();
-            var csvFile = new StreamWriter(File.Open(dataFile, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
-            var csvGAFile = new StreamWriter(File.Open(dataFileGA, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
 
+            var newdatafile = !File.Exists(dataFile);
+            var newdatafileGA = !File.Exists(dataFileGA);
 
-            Console.Clear();
-            csvFile.Write(new TextWrapper().GetHeader());
-            csvGAFile.Write(new TextGAWrapper().GetHeader());
+            StreamWriter csvFile;
+            StreamWriter csvGAFile;
+            if (newdatafile)
+                csvFile = File.CreateText(dataFile);
+            else
+                csvFile = File.AppendText(dataFile);
+            
+            if (newdatafileGA)
+                csvGAFile = File.CreateText(dataFileGA);
+            else
+                csvGAFile = File.AppendText(dataFileGA);
+
+            //csvFile = new StreamWriter(File.Open(dataFile, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
+            //csvGAFile = new StreamWriter(File.Open(dataFileGA, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
+
+            if (newdatafile)
+                csvFile.Write(new TextWrapper().GetHeader());
+            if (newdatafileGA)
+                csvGAFile.Write(new TextGAWrapper().GetHeader());
 
             for (int i = 0; i < fileCount; i++)
             {
@@ -84,6 +100,7 @@ namespace Pathfinder.CLI.Commands
                                                     Heuristic = csv.Heuristic,
                                                     MapTypeGenerate = csv.MapTypeGenerate,
                                                     MapDiagonal = csv.MapDiagonal,
+                                                    MapSize = csv.MapSize,
                                                     Solution = csv.Solution,
                                                     Time = csv.Time,
                                                     MaxNodes = csv.MaxNodes,
@@ -124,13 +141,15 @@ namespace Pathfinder.CLI.Commands
             csv.Alg = finder.Name;
             csv.Heuristic = h.GetType().Name;
             csv.MapDiagonal = map.Diagonal.ToString();
+            csv.MapSize = $"{map.Width}x{map.Height}";
+
             Console.CursorLeft = 0;
             if (Console.CursorTop > 0)
             {
                 Console.Write(new string(' ', 80));
                 Console.CursorLeft = 0;
             }
-            Console.WriteLine($"            ({i}) {csv.Alg} - { csv.Heuristic } - {csv.MapDiagonal} ({plus})");
+            Console.WriteLine($"            ({i}) {csv.Alg} - { csv.Heuristic } - {csv.MapDiagonal} ({csv.MapSize}/{csv.MapTypeGenerate})");
             DrawTextProgressBar(i, fileCount);
             if (finder.Find(map, h))
             {
