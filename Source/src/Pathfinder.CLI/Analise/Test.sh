@@ -42,28 +42,28 @@ dotnet ../bin/Debug/netcoreapp1.1/PF.dll genmap -l Maps100D2P -w 100 -h 100 -n 1
 echo
 
 echo 20x20/Never/Random..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps20
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps20
 
 echo 20x20/Never/Pattern..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps20P
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps20P
 
 echo 20x20/IfAtMostOneObstacle/Random..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps20D2
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps20D2
 
 echo 20x20/IfAtMostOneObstacle/Pattern..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps20D2P
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps20D2P
 
 echo 20x20/Never/Random..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps100
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps100
 
 echo 20x20/Never/Pattern..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps100P
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps100P
 
 echo 20x20/IfAtMostOneObstacle/Random..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps100D2
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps100D2
 
 echo 20x20/IfAtMostOneObstacle/Pattern..
-dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 -h 0 -n 4 -m 1 -c 1 -s 1 -f 0 -l Maps100D2P
+dotnet ../bin/Debug/netcoreapp1.1/PF.dll batch -a 0 1 3 4 -h 0 1 2 3 -m 2 5 -c 1 2 -f 0 1 2 -l Maps100D2P
 
 
 
