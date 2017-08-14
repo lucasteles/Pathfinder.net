@@ -24,7 +24,7 @@ namespace Pathfinder.CLI.CommandParser
         [Option('f', "fitness", HelpText = "Defines fitness algorithm (Heuristic=0, CollisionDetection=1, CirclicValidation=2, CollisionDetectionAndCirclicValidation=3)")]
         public IEnumerable<FitnessEnum> Fitness { get; set; }
 
-        [Option('s', "selections", Default = 1, HelpText = "Defines selection algorithm (Random=0, RouletteWheel=1)")]
+        [Option('s', "selections", Default = new SelectionEnum[]{ SelectionEnum.RouletteWheel}, HelpText = "Defines selection algorithm (Random=0, RouletteWheel=1)")]
         public IEnumerable<SelectionEnum> Selection { get; set; }
 
         [Option('p', "population-size", Default = 100, HelpText = "defines the population size")]
