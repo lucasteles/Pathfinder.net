@@ -9,13 +9,14 @@ namespace Pathfinder.CLI.UI
     {
         public static int Main(string[] args)
         {
-
+            //args = "genmap -l Analise -w 20 -h 20 -n 100".Split(' ');
+			// args = "batch -a 0 -h 0 -n 4 -m 1 -c 1 -f 0 -l Analise".Split(' ');
 #if DEBUG
-            Console.WriteLine("Waiting for attach process");
-            Console.Read();
+			//Console.WriteLine("Waiting for attach process");
+			//Console.Read();
 #endif
 
-            return Parser.Default
+			return Parser.Default
                 .ParseArguments<
                             MapGenerationOption,
                             MapViewerOption,

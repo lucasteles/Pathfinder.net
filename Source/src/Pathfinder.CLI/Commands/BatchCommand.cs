@@ -1,4 +1,4 @@
-﻿using Pathfinder.Abstraction;
+﻿﻿using Pathfinder.Abstraction;
 using Pathfinder.CLI.CommandParser;
 using Pathfinder.Factories;
 using System;
@@ -24,14 +24,11 @@ namespace Pathfinder.CLI.Commands
 
         static void Process(BatchOption option)
         {
-
-
             var ft = new FileTool();
-            //Settings.IDATrackRecursion = false;
             var now = DateTime.Now;
             var folder = option.Directory;
-            var dataFile = Path.Combine(folder, $"_data_{now.Year}{now.Month}{now.Day}_{now.Hour}{now.Minute}.csv");
-            var dataFileGA = Path.Combine(folder, $"_dataGA_{now.Year}{now.Month}{now.Day}_{now.Hour}{now.Minute}.csv");
+            var dataFile = "_data.csv";
+            var dataFileGA = "_dataGA.csv";
 
             var files = Directory.GetFiles(folder, "*.txt");
             var fileCount = files.Count();
@@ -41,11 +38,30 @@ namespace Pathfinder.CLI.Commands
             var Crossover = option.Crossover.ToArray();
             var Fitness = option.Fitness.ToArray();
             var Selection = option.Selection.Cast<SelectionEnum>().ToArray();
-            var csvFile = new StreamWriter(File.Open(dataFile, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
-            var csvGAFile = new StreamWriter(File.Open(dataFileGA, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
-            Console.Clear();
-            csvFile.Write(new TextWrapper().GetHeader());
-            csvGAFile.Write(new TextGAWrapper().GetHeader());
+
+            var newdatafile = !File.Exists(dataFile);
+            var newdatafileGA = !File.Exists(dataFileGA);
+
+            StreamWriter csvFile;
+            StreamWriter csvGAFile;
+            if (newdatafile)
+                csvFile = File.CreateText(dataFile);
+            else
+                csvFile = File.AppendText(dataFile);
+            
+            if (newdatafileGA)
+                csvGAFile = File.CreateText(dataFileGA);
+            else
+                csvGAFile = File.AppendText(dataFileGA);
+
+            //csvFile = new StreamWriter(File.Open(dataFile, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
+            //csvGAFile = new StreamWriter(File.Open(dataFileGA, FileMode.OpenOrCreate), Encoding.UTF8, 4096, false);
+
+            if (newdatafile)
+                csvFile.Write(new TextWrapper().GetHeader());
+            if (newdatafileGA)
+                csvGAFile.Write(new TextGAWrapper().GetHeader());
+
             for (int i = 0; i < fileCount; i++)
             {
                 var map = FileTool.ReadMapFromFile(files[i]);
@@ -66,6 +82,7 @@ namespace Pathfinder.CLI.Commands
                                             {
                                                 GC.Collect();
                                                 GC.WaitForPendingFinalizers();
+
                                                 var GAFinder = (IGeneticAlgorithm)new FinderFactory().GetImplementation(_finder);
                                                 GAFinder.Crossover = new CrossoverFactory().GetImplementation(Crossover[cross]);
                                                 GAFinder.Mutate = new MutateFactory().GetImplementation(Mutation[mut]);
@@ -75,13 +92,15 @@ namespace Pathfinder.CLI.Commands
                                                 var helper = $"\n                n:{j},cx:{GAFinder.Crossover.GetType().Name},m:{GAFinder.Mutate.GetType().Name},f:{GAFinder.Fitness.GetType().Name},s:{GAFinder.Selection.GetType().Name}";
                                                 var csv = new TextWrapper();
                                                 csv = RunStep(csv, i, fileCount, map, h, GAFinder, option.Directory, Path.GetFileName(files[i]), helper);
+                                                csvFile.Write(csv.ToString());
                                                 var csvGA = new TextGAWrapper
                                                 {
                                                     Alg = csv.Alg,
-                                                    Map = csv.Map,
+                                                    MapNumber = csv.MapNumber,
                                                     Heuristic = csv.Heuristic,
-                                                    MapType = csv.MapType,
-                                                    Diagonal = csv.Diagonal,
+                                                    MapTypeGenerate = csv.MapTypeGenerate,
+                                                    MapDiagonal = csv.MapDiagonal,
+                                                    MapSize = csv.MapSize,
                                                     Solution = csv.Solution,
                                                     Time = csv.Time,
                                                     MaxNodes = csv.MaxNodes,
@@ -117,18 +136,20 @@ namespace Pathfinder.CLI.Commands
         static TextWrapper RunStep(TextWrapper baseScv, int i, int fileCount, IMap map, IHeuristic h, IFinder finder, string path, string mapName, string plus = "")
         {
             var csv = baseScv;
-            csv.Map = i.ToString();
-            csv.MapType = map.MapType.ToString();
+            csv.MapNumber = i.ToString();
+            csv.MapTypeGenerate = map.MapType.ToString();
             csv.Alg = finder.Name;
             csv.Heuristic = h.GetType().Name;
-            csv.Diagonal = map.Diagonal.ToString();
+            csv.MapDiagonal = map.Diagonal.ToString();
+            csv.MapSize = $"{map.Width}x{map.Height}";
+
             Console.CursorLeft = 0;
             if (Console.CursorTop > 0)
             {
                 Console.Write(new string(' ', 80));
                 Console.CursorLeft = 0;
             }
-            Console.WriteLine($"            ({i}) {csv.Alg} - { csv.Heuristic } - {csv.Diagonal} ({plus})");
+            Console.WriteLine($"            ({i}) {csv.Alg} - { csv.Heuristic } - {csv.MapDiagonal} ({csv.MapSize}/{csv.MapTypeGenerate})");
             DrawTextProgressBar(i, fileCount);
             if (finder.Find(map, h))
             {
@@ -172,11 +193,12 @@ namespace Pathfinder.CLI.Commands
         }
         class TextWrapper : BaseTextWrapper
         {
+            public string MapNumber { get; set; }
+            public string MapTypeGenerate { get; set; }
+            public string MapSize { get; set; }
+            public string MapDiagonal { get; set; }
             public string Alg { get; set; }
-            public string Map { get; set; }
-            public string MapType { get; set; }
             public string Heuristic { get; set; }
-            public string Diagonal { get; set; }
             public string Solution { get; set; }
             public string Time { get; set; }
             public string MaxNodes { get; set; }
@@ -250,7 +272,4 @@ namespace Pathfinder.CLI.Commands
             Console.Write(progress * 100 / total + "%    ");
         }
     }
-
-
 }
-

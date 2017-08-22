@@ -24,7 +24,7 @@ namespace Pathfinder.CLI.CommandParser
         [Option('f', "fitness", HelpText = "Defines fitness algorithm (Heuristic=0, CollisionDetection=1, CirclicValidation=2, CollisionDetectionAndCirclicValidation=3)")]
         public IEnumerable<FitnessEnum> Fitness { get; set; }
 
-        [Option('s', "selections", HelpText = "Defines selection algorithm (Random=0, RouletteWheel=1)")]
+        [Option('s', "selections", Default = new SelectionEnum[]{ SelectionEnum.RouletteWheel}, HelpText = "Defines selection algorithm (Random=0, RouletteWheel=1)")]
         public IEnumerable<SelectionEnum> Selection { get; set; }
 
         [Option('p', "population-size", Default = 100, HelpText = "defines the population size")]
@@ -36,7 +36,7 @@ namespace Pathfinder.CLI.CommandParser
         [Option('k', "best-pick", Default = 0, HelpText = "defines qtd of best genome to put directly in the new generation")]
         public int BestToPick { get; set; }
 
-        [Option('n', "ga-times", Default = 2, HelpText = "defines qtd of times will run each GA aonfig")]
+        [Option('n', "ga-times", Default = 4, HelpText = "defines qtd of times will run each GA aonfig")]
         public int GaTimes { get; set; }
 
         [Option('t', "ida-timeout", HelpText = "defines IDA* algorithm timeout")]
